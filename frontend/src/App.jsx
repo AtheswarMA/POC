@@ -6,7 +6,7 @@ import { LogOut, PlusCircle, IndianRupee, PieChart as PieChartIcon, LogIn, Trash
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const API_URL = 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const CATEGORIES = [
   "Department Store & Supermarket",
