@@ -145,9 +145,11 @@ function App() {
         username,
         monthly_budget: parseFloat(budgetInput)
       });
-      fetchData();
+      await fetchData();
+      alert(`Budget successfully updated to ₹${parseFloat(budgetInput).toFixed(2)}!`);
     } catch (err) {
       console.error(err);
+      alert("Failed to update budget. Please try again.");
     }
   };
 
@@ -231,7 +233,15 @@ function App() {
       })
     : expenses;
 
-  const totalExpenses = filteredExpenses.reduce((sum, exp) => sum + exp.amount, 0);
+  const displayExpensesForStats = selectedMonthFilter 
+    ? filteredExpenses 
+    : expenses.filter(exp => {
+        if (!exp.date) return false;
+        const d = new Date(exp.date);
+        return d.getFullYear() === new Date().getFullYear() && d.getMonth() === new Date().getMonth();
+      });
+
+  const totalExpenses = displayExpensesForStats.reduce((sum, exp) => sum + exp.amount, 0);
   const remainingBudget = budget - totalExpenses;
 
   const chartData = {
@@ -268,7 +278,7 @@ function App() {
           <div className="stat-card">
             <h3>Monthly Budget</h3>
             <div className="value" style={{ display: 'flex', alignItems: 'center' }}>
-              <IndianRupee size={28} /> {budget.toFixed(2)}
+              <IndianRupee size={28} /> {parseFloat(budget || 0).toFixed(2)}
             </div>
             <br/>
             <form onSubmit={handleSetBudget} style={{ display: 'flex', gap: '0.5rem' }}>
@@ -286,7 +296,7 @@ function App() {
           
           <div className="stat-card">
             <h3 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              Total Expenses {selectedMonthFilter && <span className="badge" style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem' }}>{selectedMonthFilter.label}</span>}
+              Total Expenses {selectedMonthFilter ? <span className="badge" style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem' }}>{selectedMonthFilter.label}</span> : <span className="badge" style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem' }}>This Month</span>}
             </h3>
             <div className="value" style={{ display: 'flex', alignItems: 'center', color: 'var(--danger-color)' }}>
               <IndianRupee size={28} /> {totalExpenses.toFixed(2)}
