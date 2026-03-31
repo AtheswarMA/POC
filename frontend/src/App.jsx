@@ -51,6 +51,7 @@ function App() {
       setBudgetInput(budRes.data.monthly_budget);
     } catch (err) {
       console.error(err);
+      alert("Uh oh! Could not connect to the Backend Server. Please make sure your Python terminal is running (uvicorn main:app --reload)");
     }
   };
 
@@ -67,7 +68,11 @@ function App() {
       setPasswordInput('');
     } catch (err) {
       console.error(err);
-      setLoginError('Invalid credentials. Hint: use admin / admin123');
+      if (err.message === 'Network Error' || !err.response) {
+        setLoginError('Server unreachable. Is your backend running?');
+      } else {
+        setLoginError('Invalid credentials. Hint: use admin / admin123');
+      }
     }
   };
 
@@ -106,8 +111,10 @@ function App() {
       setExpenseCategory(CATEGORIES[0]);
       setExpenseDate(new Date().toISOString().split('T')[0]);
       fetchData();
+      alert(editingId ? "Expense successfully updated!" : "New expense added!");
     } catch (err) {
       console.error(err);
+      alert("Failed to save expense. Is the backend server running?");
     }
   };
 
@@ -116,8 +123,10 @@ function App() {
     try {
       await axios.delete(`${API_URL}/expense/${id}`);
       fetchData();
+      alert("Expense deleted.");
     } catch (err) {
       console.error(err);
+      alert("Failed to delete expense.");
     }
   };
 
