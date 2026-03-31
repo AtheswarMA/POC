@@ -111,7 +111,6 @@ function App() {
       setExpenseCategory(CATEGORIES[0]);
       setExpenseDate(new Date().toISOString().split('T')[0]);
       fetchData();
-      alert(editingId ? "Expense successfully updated!" : "New expense added!");
     } catch (err) {
       console.error(err);
       alert("Failed to save expense. Is the backend server running?");
@@ -123,7 +122,6 @@ function App() {
     try {
       await axios.delete(`${API_URL}/expense/${id}`);
       fetchData();
-      alert("Expense deleted.");
     } catch (err) {
       console.error(err);
       alert("Failed to delete expense.");
@@ -155,7 +153,6 @@ function App() {
         monthly_budget: parseFloat(budgetInput)
       });
       await fetchData();
-      alert(`Budget successfully updated to ₹${parseFloat(budgetInput).toFixed(2)}!`);
     } catch (err) {
       console.error(err);
       alert("Failed to update budget. Please try again.");
